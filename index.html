@@ -1,0 +1,1112 @@
+<!--Minecraft Building Generator for Blogger 
+   Optimized for embedding in blog posts-->
+<div id="post-intro">
+   <h2 style="text-align: left;">マイクラ建築をサポートするアプリ。</h2><span><!--more--></span><div class="separator" style="clear: both; text-align: center;"><span style="text-align: left;">使い方は動画からも確認できます。</span></div><div class="separator" style="clear: both; text-align: center;"><iframe allowfullscreen="" class="BLOG_video_class" height="266" src="https://www.youtube.com/embed/2ChUJa7Baj8" width="320" youtube-src-id="2ChUJa7Baj8"></iframe></div></div>
+詳細な解説は<a href="https://note.com/masaki_labo1103/n/n951a11cc1cd8">note記事</a>を参照<br>
+
+
+<div id="mc-builder-app">
+    <style>
+        /* スコープを #mc-builder-app 内に限定してブログへの影響を防ぐ */
+        #mc-builder-app {
+            /* CSS Variables - Scoped */
+            --bg-color: #1a1a1a;
+            --surface-color: #2c2c2c;
+            --primary-color: #4CAF50;
+            --primary-hover-color: #66bb6a;
+            --secondary-color: #03A9F4;
+            --text-color: #e0e0e0;
+            --border-color: #444;
+            --grid-line-color: #444;
+            --grid-bg-color: #222;
+            --font-family: 'Noto Sans JP', 'Roboto', sans-serif;
+            
+            /* Base App Styles */
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            width: 100%;
+            max-width: 100%; /* 親要素(ブログ記事幅)に合わせる */
+            margin: 0 auto;
+            padding: 10px;
+            border-radius: 8px;
+            box-sizing: border-box;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        /* Reset within the app */
+        #mc-builder-app * {
+            box-sizing: border-box;
+        }
+
+        #mc-builder-app h1, #mc-builder-app h2, #mc-builder-app h3 {
+            font-weight: 500;
+            margin: 0 0 0.5em 0;
+            color: var(--text-color);
+        }
+
+        /* Header */
+        #mc-builder-app header {
+            background-color: var(--surface-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-radius: 8px 8px 0 0;
+        }
+
+        #mc-builder-app header h1 {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        
+        #mc-builder-app .lang-switch {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        #mc-builder-app .lang-switch label {
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        #mc-builder-app .app-main {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            padding: 1rem 0;
+        }
+
+        /* Accordion */
+        #mc-builder-app details {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+        #mc-builder-app summary {
+            padding: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            list-style: none;
+            outline: none;
+        }
+        #mc-builder-app summary::-webkit-details-marker {
+            display: none;
+        }
+        #mc-builder-app .accordion-content {
+            padding: 0 1rem 1rem;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+        #mc-builder-app .accordion-content p {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Layout Panels */
+        #mc-builder-app .main-area {
+            display: flex;
+            flex-direction: column; /* デフォルトは縦積み（ブログ幅用） */
+            gap: 1.5rem;
+        }
+        
+        @media (min-width: 900px) {
+            #mc-builder-app .main-area {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            #mc-builder-app .panel.layer-panel {
+                flex: 1;
+                min-width: 250px;
+            }
+            #mc-builder-app .panel.palette-panel {
+                flex: 1;
+                min-width: 250px;
+            }
+        }
+
+        #mc-builder-app .panel {
+            background-color: var(--surface-color);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Layer Panel */
+        #mc-builder-app .layer-display {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 0.5rem;
+            background-color: var(--bg-color);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        #mc-builder-app .layer-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+
+        /* Buttons */
+        #mc-builder-app .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 40px;
+            line-height: 1.2;
+        }
+        #mc-builder-app .btn:hover {
+            background-color: var(--primary-hover-color);
+        }
+        #mc-builder-app .btn:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+        }
+        #mc-builder-app .btn.secondary {
+            background-color: #555;
+        }
+        #mc-builder-app .btn.secondary:hover {
+            background-color: #777;
+        }
+        #mc-builder-app .btn.full-width {
+            grid-column: 1 / -1;
+            width: 100%;
+        }
+
+        /* Grid Editor - Scrollable Wrapper */
+        #mc-builder-app .editor-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        /* グリッドのスクロールコンテナ */
+        #mc-builder-app .grid-scroll-wrapper {
+            overflow: auto;
+            max-width: 100%;
+            border: 1px solid var(--border-color);
+            background: var(--bg-color);
+            padding: 10px;
+            border-radius: 4px;
+            /* スクロールバーのスタイル */
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) var(--surface-color);
+        }
+        
+        #mc-builder-app .grid-wrapper {
+            position: relative;
+            padding: 25px; /* 軸のスペース */
+            width: fit-content;
+            margin: 0 auto;
+        }
+        
+        #mc-builder-app #grid-editor {
+            display: grid;
+            grid-template-columns: repeat(50, 12px);
+            grid-template-rows: repeat(50, 12px);
+            border: 1px solid var(--grid-line-color);
+            background-color: var(--grid-bg-color);
+            /* 固定サイズは維持し、親でスクロールさせる */
+            width: 600px; 
+            height: 600px; 
+        }
+        
+        /* スマホ向けに少しグリッドを小さくする */
+        @media (max-width: 600px) {
+            #mc-builder-app #grid-editor {
+                grid-template-columns: repeat(50, 10px);
+                grid-template-rows: repeat(50, 10px);
+                width: 500px;
+                height: 500px;
+            }
+        }
+
+        #mc-builder-app .grid-cell {
+            width: 100%;
+            height: 100%;
+            box-shadow: inset 0 0 0 0.5px var(--grid-line-color);
+            cursor: pointer;
+        }
+        
+        #mc-builder-app .axis {
+            position: absolute;
+            font-size: 0.8rem;
+            color: #aaa;
+            font-weight: bold;
+            pointer-events: none;
+        }
+        #mc-builder-app .axis-x {
+            bottom: 0px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        #mc-builder-app .axis-z {
+            top: 50%;
+            left: 0px;
+            transform: translateY(-50%) rotate(-90deg);
+        }
+
+        /* Palette */
+        #mc-builder-app .palette-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            gap: 0.5rem;
+        }
+        #mc-builder-app .palette-btn {
+            width: 36px;
+            height: 36px;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        #mc-builder-app .palette-btn.selected {
+            border-color: var(--secondary-color);
+            transform: scale(1.1);
+        }
+        #mc-builder-app .palette-item label {
+            width: 20px;
+            text-align: right;
+            font-size: 0.8rem;
+        }
+        #mc-builder-app .palette-item select {
+            flex-grow: 1;
+            padding: 0.3rem;
+            background-color: #333;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.85rem;
+            max-width: 100%;
+        }
+
+        /* Command Output */
+        #mc-builder-app .output-data-area {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        #mc-builder-app .origin-coords {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        #mc-builder-app .origin-coords label {
+            font-size: 0.9rem;
+        }
+        #mc-builder-app .origin-coords input[type="number"] {
+            width: 60px;
+            padding: 0.3rem;
+            background-color: #333;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+        #mc-builder-app .coord-mode-select {
+             padding: 0.3rem;
+             background-color: #333;
+             color: var(--text-color);
+             border: 1px solid var(--border-color);
+             border-radius: 4px;
+        }
+
+        #mc-builder-app #command-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 0.5rem;
+            background-color: var(--bg-color);
+            margin-top: 1rem;
+        }
+
+        #mc-builder-app .command-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem;
+            font-family: monospace;
+            font-size: 0.8rem;
+            background-color: #222;
+            border-radius: 4px;
+            margin-bottom: 0.25rem;
+        }
+        #mc-builder-app .command-item.copied {
+            background-color: #004d40;
+        }
+        #mc-builder-app .command-text {
+            flex-grow: 1;
+            white-space: pre;
+            overflow-x: auto;
+            scrollbar-width: thin;
+        }
+        #mc-builder-app .copy-cmd-btn {
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            background-color: var(--secondary-color);
+            min-width: auto;
+            min-height: 24px;
+        }
+
+        /* Data Panel */
+        #mc-builder-app .data-panel input[type="file"] {
+            display: none;
+        }
+
+        /* Footer */
+        #mc-builder-app footer {
+            text-align: center;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        /* Toast */
+        #mc-builder-app .toast-msg {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 100;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            width: max-content;
+        }
+        #mc-builder-app .toast-msg.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        #mc-builder-app .toast-msg.error {
+            background-color: #D32F2F;
+        }
+      /*通常時の見た目*/
+        a{
+          color:Orange;　
+          font-weight:bold;
+          transition:0.3s;/*ふわっといろを変えるアニメーション*/  
+        }
+        /*マウスが乗ったときの見た目(hover)*/
+       a:hover{
+            color:Green; /*マウスが乗るとグリーンとなる*/
+            text-decoration:none;/*下線を消す*/
+      }
+    </style>
+
+    <header>
+       <h1 data-lang-key="app_title">マイクラ建築ジェネレーターV2.0</h1>
+        <div class="lang-switch">
+            <label data-lang-key="lang_jp">日本語</label>
+            <input id="app-lang-toggle" type="checkbox" />
+            <label data-lang-key="lang_en">English</label>
+        </div>
+    </header>
+
+    <div class="app-main">
+        <div class="info-area">
+            <details open="">
+                <summary data-lang-key="how_to_use_title">使い方</summary>
+                <div class="accordion-content">
+                    <p data-lang-key="how_to_use_1">1. 好きなブロックを選ぶ: 右のパレットで、色に対応するマイクラのブロックを選んでね。</p>
+                    <p data-lang-key="how_to_use_2">2. 設計図をかく: 真ん中のエリアで、マスをクリックしてブロックを置いていこう。左のパネルで高さを変えられるよ。</p>
+                    <p data-lang-key="how_to_use_3">3. コマンドを作る: ブロックを置き終わったら、「コマンド生成」ボタンを押そう。</p>
+                    <p data-lang-key="how_to_use_4">4. マイクラに貼り付け: 出てきたコマンドをコピーして、マイクラのチャット欄に貼り付けて実行しよう！</p>
+                </div>
+            </details>
+            <details>
+                <summary data-lang-key="notes_title">注意点</summary>
+                <div class="accordion-content">
+                    <p data-lang-key="notes_1">・このツールはMinecraft統合版(Bedrock Edition)用です。Java版ではブロック名が合わない場合もあります。</p>
+                    <p data-lang-key="notes_2">・AutoHotkeyを使うと、長いコマンドも一回で実行できて便利です。</p>
+                    <p data-lang-key="notes_3">・コマンドを実行する前に、ゲームの設定で「チートの実行」がオンになっているか確認してください。</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="main-area">
+            <div class="panel layer-panel">
+                <h2 data-lang-key="layer_panel_title">レイヤー操作</h2>
+                <div class="layer-display" id="app-layer-display">Y=1</div>
+                <div class="layer-controls">
+                    <button class="btn" data-lang-key="layer_up" id="app-layer-up-btn">上へ</button>
+                    <button class="btn" data-lang-key="layer_down" id="app-layer-down-btn">下へ</button>
+                    <button class="btn secondary" data-lang-key="copy_layer" id="app-copy-layer-btn">このレイヤーをコピー</button>
+                    <button class="btn secondary" data-lang-key="paste_layer" id="app-paste-layer-btn">貼り付け</button>
+                    <button class="btn secondary full-width" data-lang-key="copy_lower_layer" id="app-copy-lower-layer-btn">下層レイヤーをコピー</button>
+                    <button class="btn secondary full-width" data-lang-key="clear_layer" id="app-clear-layer-btn">このレイヤーをクリア</button>
+                </div>
+            </div>
+
+            <div class="editor-container">
+                <div class="grid-scroll-wrapper">
+                    <div class="grid-wrapper">
+                        <div id="grid-editor"></div>
+                        <div class="axis axis-x">X+ →</div>
+                        <div class="axis axis-z">Z+ →</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel palette-panel">
+                <h2 data-lang-key="palette_panel_title">ブロックパレット</h2>
+                <div id="app-palette-container"></div>
+            </div>
+        </div>
+
+        <div class="output-data-area">
+            <div class="panel command-panel">
+                <h2 data-lang-key="command_panel_title">コマンド出力</h2>
+                <div class="origin-coords">
+                    <label data-lang-key="origin_coords">起点座標:</label>
+                    <label>X</label><input id="app-originX" type="number" value="0" />
+                    <label>Y</label><input id="app-originY" type="number" value="0" />
+                    <label>Z</label><input id="app-originZ" type="number" value="0" />
+                    <select class="coord-mode-select" id="app-coord-mode">
+                        <option data-lang-key="mode_absolute" value="absolute">絶対座標</option>
+                        <option data-lang-key="mode_relative" value="relative">相対座標 (~)</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <input id="app-clear-area-checkbox" type="checkbox" />
+                    <label data-lang-key="clear_area" style="font-size: 0.9rem;">建築前に対象エリアを整地する</label>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="btn full-width" data-lang-key="generate_cmd" id="app-generate-cmd-btn">コマンド生成</button>
+                    <button class="btn secondary" data-lang-key="copy_all" disabled="" id="app-copy-all-btn">全てコピー</button>
+                </div>
+                <div id="command-list"></div>
+            </div>
+            
+            <div class="panel data-panel">
+                 <h2 data-lang-key="data_panel_title">データ操作</h2>
+                 <div style="display: flex; gap: 0.5rem;">
+                     <button class="btn full-width" data-lang-key="export_json" id="app-export-json-btn">保存 (JSON)</button>
+                     <button class="btn full-width" data-lang-key="import_json" id="app-import-json-btn">読込 (JSON)</button>
+                 </div>
+                 <input accept=".json" id="app-import-file-input" type="file" />
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div>© MASAKI LABO</div>
+        <details style="background-color: transparent; border: none; margin-top: 0.5rem;">
+             <summary data-lang-key="disclaimer_title" style="color: #888888; font-size: 0.8rem;">免責事項・利用規約</summary>
+             <div class="accordion-content" style="border: none; color: #aaaaaa; font-size: 0.8rem; text-align: left;">
+                <p data-lang-key="disclaimer_1"><b>1. 自己責任</b><br />本アプリはMinecraft用の設計図生成ツールです。生成されるコマンドの利用によって生じたゲーム内の不具合やデータ損失について、作者は一切責任を負いません。</p>
+                <p data-lang-key="disclaimer_2"><b>2. 公式利用規約違反の禁止</b><br />本アプリの利用にあたっては、Minecraftの公式利用規約に違反する行為は禁止します。</p>
+             </div>
+        </details>
+    </footer>
+
+    <div class="toast-msg" id="app-toast"></div>
+
+    <script>
+    // 即時関数で囲んで、ブログ内の他のスクリプトとの競合を防ぐ
+    (function() {
+        // --- STATE MANAGEMENT ---
+        const GRID_SIZE = 50;
+        const MAX_LAYERS = 20;
+        let currentLayer = 0;
+        let selectedPalette = 1;
+        let gridData = Array(MAX_LAYERS).fill(null).map(() => Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(0)));
+        let paletteAssignments = {};
+        let layerClipboard = null;
+        let currentLanguage = 'jp';
+        let lastGeneratedCommands = [];
+
+        // --- DOM ELEMENTS ---
+        // IDにプレフィックスをつけて取得
+        const gridEditor = document.getElementById('grid-editor');
+        const layerDisplay = document.getElementById('app-layer-display');
+        const paletteContainer = document.getElementById('app-palette-container');
+        const generateBtn = document.getElementById('app-generate-cmd-btn');
+        const copyAllBtn = document.getElementById('app-copy-all-btn');
+        const commandList = document.getElementById('command-list');
+        const langToggle = document.getElementById('app-lang-toggle');
+        const toast = document.getElementById('app-toast');
+        const coordModeSelect = document.getElementById('app-coord-mode');
+        
+        // --- DATA ---
+        const lang = {
+            jp: {
+                app_title: "マイクラ建築ジェネレーターV2.0",
+                lang_jp: "日本語", lang_en: "English",
+                how_to_use_title: "使い方",
+                how_to_use_1: "1. 好きなブロックを選ぶ: 右のパレットで、色に対応するマイクラのブロックを選んでね。",
+                how_to_use_2: "2. 設計図をかく: 真ん中のエリアで、マスをクリックしてブロックを置いていこう。左のパネルで高さを変えられるよ。",
+                how_to_use_3: "3. コマンドを作る: ブロックを置き終わったら、「コマンド生成」ボタンを押そう。",
+                how_to_use_4: "4. マイクラに貼り付け: 出てきたコマンドをコピーして、マイクラのチャット欄に貼り付けて実行しよう！",
+                notes_title: "注意点",
+                notes_1: "・このツールはMinecraft統合版(Bedrock Edition)用です。Java版ではブロック名が合わない場合もあります。",
+                notes_2: "・AutoHotkeyを使うと、長いコマンドも一回で実行できて便利です。",
+                notes_3: "・コマンドを実行する前に、ゲームの設定で「チートの実行」がオンになっているか確認してください。",
+                layer_panel_title: "レイヤー操作", layer_up: "上へ", layer_down: "下へ",
+                copy_layer: "このレイヤーをコピー", paste_layer: "貼り付け",
+                copy_lower_layer: "下層レイヤーをコピー", clear_layer: "クリア",
+                palette_panel_title: "ブロックパレット",
+                command_panel_title: "コマンド出力", origin_coords: "起点座標:",
+                mode_absolute: "絶対座標", mode_relative: "相対座標 (~)",
+                clear_area: "建築前に対象エリアを整地する",
+                generate_cmd: "コマンド生成", copy_all: "全てコピー",
+                data_panel_title: "データ操作", export_json: "保存 (JSON)", import_json: "読込 (JSON)",
+                disclaimer_title: "免責事項・利用規約",
+                disclaimer_1: "<b>1. 自己責任</b><br>本アプリはMinecraft用の設計図生成ツールです。生成されるコマンドの利用によって生じたゲーム内の不具合やデータ損失について、作者は一切責任を負いません。",
+                disclaimer_2: "<b>2. 公式利用規約違反の禁止</b><br>本アプリの利用にあたっては、Minecraftの公式利用規約に違反する行為は禁止します。",
+                copied_feedback: "コピーしました！", generating_cmd: "コマンド生成中...",
+                confirm_clear_layer: "本当にこのレイヤーをクリアしますか？",
+                confirm_import: "現在の設計図は上書きされます。よろしいですか？",
+                copy_btn_text: "コピー",
+                import_success: "インポートしました！",
+                import_error: "ファイルの読み込みに失敗しました。"
+            },
+            en: {
+                app_title: "Minecraft Building Generator v2.0",
+                lang_jp: "日本語", lang_en: "English",
+                how_to_use_title: "How to Use",
+                how_to_use_1: "1. Pick Blocks: Choose Minecraft blocks for each color in the right palette.",
+                how_to_use_2: "2. Draw Blueprint: Click on the grid to place blocks. Change the height (layer) with the left panel.",
+                how_to_use_3: "3. Generate Commands: When you're done, press the 'Generate Commands' button.",
+                how_to_use_4: "4. Paste into Minecraft: Copy the generated commands and paste them into the Minecraft chat to run them!",
+                notes_title: "Notes",
+                notes_1: "・This tool is for Minecraft Bedrock Edition. Block names may not match in Java Edition.",
+                notes_2: "・AutoHotkey is convenient because it allows you to execute long commands in one go.",
+                notes_3: "・Make sure 'Activate Cheats' is ON in your world settings before running commands.",
+                layer_panel_title: "Layer Control", layer_up: "Up", layer_down: "Down",
+                copy_layer: "Copy Layer", paste_layer: "Paste",
+                copy_lower_layer: "Copy Lower Layer", clear_layer: "Clear",
+                palette_panel_title: "Block Palette",
+                command_panel_title: "Command Output", origin_coords: "Origin:",
+                mode_absolute: "Absolute", mode_relative: "Relative (~)",
+                clear_area: "Clear area before building",
+                generate_cmd: "Generate Commands", copy_all: "Copy All",
+                data_panel_title: "Data Operations", export_json: "Export (JSON)", import_json: "Import (JSON)",
+                disclaimer_title: "Disclaimer & Terms of Use",
+                disclaimer_1: "<b>1. Use at Your Own Risk</b><br>This is a blueprint generation tool. The creator is not responsible for any issues caused by using generated commands.",
+                disclaimer_2: "<b>2. Prohibition of Violating Official ToS</b><br>Do not use this application to violate Minecraft's official Terms of Service.",
+                copied_feedback: "Copied!", generating_cmd: "Generating...",
+                confirm_clear_layer: "Are you sure you want to clear this layer?",
+                confirm_import: "This will overwrite your current blueprint. Are you sure?",
+                copy_btn_text: "Copy",
+                import_success: "Imported successfully!",
+                import_error: "Failed to load file."
+            }
+        };
+
+        // ブロックデータ（元のコードと同じ）
+        const blocks = {
+            wall_bricks: [
+               { id: "brick_block", en: "Brick Block", jp: "レンガブロック" }, { id: "stone_bricks", en: "Stone Bricks", jp: "石レンガ" }, { id: "mossy_stone_bricks", en: "Mossy Stone Bricks", jp: "苔の生えた石レンガ" }, { id: "cracked_stone_bricks", en: "Cracked Stone Bricks", jp: "ひび割れた石レンガ" }, { id: "chiseled_stone_bricks", en: "Chiseled Stone Bricks", jp: "模様入りの石レンガ" }, { id: "end_bricks", en: "End Stone Bricks", jp: "エンドストーン レンガ" }, { id: "nether_brick", en: "Nether Bricks", jp: "ネザーレンガ" }, { id: "red_nether_brick", en: "Red Nether Bricks", jp: "赤いネザーレンガ" }, { id: "mud_bricks", en: "Mud Bricks", jp: "泥レンガ" }, { id: "deepslate_bricks", en: "Deepslate Bricks", jp: "深層岩レンガ" }, { id: "polished_blackstone_bricks", en: "Polished Blackstone Bricks", jp: "磨かれたブラックストーンレンガ" },
+            ],
+            wall_concrete: [
+               { id: "white_concrete", en: "White Concrete", jp: "白色のコンクリート" }, { id: "orange_concrete", en: "Orange Concrete", jp: "橙色のコンクリート" }, { id: "magenta_concrete", en: "Magenta Concrete", jp: "赤紫色のコンクリート" }, { id: "light_blue_concrete", en: "Light Blue Concrete", jp: "空色のコンクリート" }, { id: "yellow_concrete", en: "Yellow Concrete", jp: "黄色のコンクリート" }, { id: "lime_concrete", en: "Lime Concrete", jp: "黄緑色のコンクリート" }, { id: "pink_concrete", en: "Pink Concrete", jp: "ピンクのコンクリート" }, { id: "gray_concrete", en: "Gray Concrete", jp: "灰色のコンクリート" }, { id: "light_gray_concrete", en: "Light Gray Concrete", jp: "薄灰色のコンクリート" }, { id: "cyan_concrete", en: "Cyan Concrete", jp: "青緑色のコンクリート" }, { id: "purple_concrete", en: "Purple Concrete", jp: "紫色のコンクリート" }, { id: "blue_concrete", en: "Blue Concrete", jp: "青色のコンクリート" }, { id: "brown_concrete", en: "Brown Concrete", jp: "茶色のコンクリート" }, { id: "green_concrete", en: "Green Concrete", jp: "緑色のコンクリート" }, { id: "red_concrete", en: "Red Concrete", jp: "赤色のコンクリート" }, { id: "black_concrete", en: "Black Concrete", jp: "黒色のコンクリート" },
+            ],
+            wall_terracotta: [
+                { id: "hardened_clay", en: "Terracotta", jp: "テラコッタ" }, { id: "white_terracotta", en: "White Terracotta", jp: "白色のテラコッタ" }, { id: "orange_terracotta", en: "Orange Terracotta", jp: "橙色のテラコッタ" }, { id: "magenta_terracotta", en: "Magenta Terracotta", jp: "赤紫色のテラコッタ" }, { id: "light_blue_terracotta", en: "Light Blue Terracotta", jp: "空色のテラコッタ" }, { id: "yellow_terracotta", en: "Yellow Terracotta", jp: "黄色のテラコッタ" }, { id: "lime_terracotta", en: "Lime Terracotta", jp: "黄緑色のテラコッタ" }, { id: "pink_terracotta", en: "Pink Terracotta", jp: "ピンクのテラコッタ" }, { id: "gray_terracotta", en: "Gray Terracotta", jp: "灰色のテラコッタ" }, { id: "light_gray_terracotta", en: "Light Gray Terracotta", jp: "薄灰色のテラコッタ" }, { id: "cyan_terracotta", en: "Cyan Terracotta", jp: "青緑色のテラコッタ" }, { id: "purple_terracotta", en: "Purple Terracotta", jp: "紫色のテラコッタ" }, { id: "blue_terracotta", en: "Blue Terracotta", jp: "青色のテラコッタ" }, { id: "brown_terracotta", en: "Brown Terracotta", jp: "茶色のテラコッタ" }, { id: "green_terracotta", en: "Green Terracotta", jp: "緑色のテラコッタ" }, { id: "red_terracotta", en: "Red Terracotta", jp: "赤色のテラコッタ" }, { id: "black_terracotta", en: "Black Terracotta", jp: "黒色のテラコッタ" },
+            ],
+            wall_wool: [
+                { id: "white_wool", en: "White Wool", jp: "白色の羊毛" }, { id: "orange_wool", en: "Orange Wool", jp: "橙色の羊毛" }, { id: "magenta_wool", en: "Magenta Wool", jp: "赤紫色の羊毛" }, { id: "light_blue_wool", en: "Light Blue Wool", jp: "空色の羊毛" }, { id: "yellow_wool", en: "Yellow Wool", jp: "黄色の羊毛" }, { id: "lime_wool", en: "Lime Wool", jp: "黄緑色の羊毛" }, { id: "pink_wool", en: "Pink Wool", jp: "ピンクの羊毛" }, { id: "gray_wool", en: "Gray Wool", jp: "灰色の羊毛" }, { id: "light_gray_wool", en: "Light Gray Wool", jp: "薄灰色の羊毛" }, { id: "cyan_wool", en: "Cyan Wool", jp: "青緑色の羊毛" }, { id: "purple_wool", en: "Purple Wool", jp: "紫色の羊毛" }, { id: "blue_wool", en: "Blue Wool", jp: "青色の羊毛" }, { id: "brown_wool", en: "Brown Wool", jp: "茶色の羊毛" }, { id: "green_wool", en: "Green Wool", jp: "緑色の羊毛" }, { id: "red_wool", en: "Red Wool", jp: "赤色の羊毛" }, { id: "black_wool", en: "Black Wool", jp: "黒色の羊毛" },
+            ],
+            floor_wood1: [
+                 { id: "oak_planks", en: "Oak Planks", jp: "オークの板材" }, { id: "spruce_planks", en: "Spruce Planks", jp: "トウヒの板材" }, { id: "birch_planks", en: "Birch Planks", jp: "シラカバの板材" }, { id: "jungle_planks", en: "Jungle Planks", jp: "ジャングルの板材" }, { id: "stripped_oak_log", en: "Stripped Oak Log", jp: "樹皮を剥いだオークの原木" }, { id: "stripped_spruce_log", en: "Stripped Spruce Log", jp: "樹皮を剥いだトウヒの原木" }, { id: "stripped_birch_log", en: "Stripped Birch Log", jp: "樹皮を剥いだシラカバの原木" }, { id: "stripped_jungle_log", en: "Stripped Jungle Log", jp: "樹皮を剥いだジャングルの原木" },
+            ],
+             floor_wood2: [
+                { id: "acacia_planks", en: "Acacia Planks", jp: "アカシアの板材" }, { id: "dark_oak_planks", en: "Dark Oak Planks", jp: "ダークオークの板材" }, { id: "mangrove_planks", en: "Mangrove Planks", jp: "マングローブの板材" }, { id: "cherry_planks", en: "Cherry Planks", jp: "サクラの板材" }, { id: "bamboo_planks", en: "Bamboo Planks", jp: "竹の板材" }, { id: "crimson_planks", en: "Crimson Planks", jp: "真紅の板材" }, { id: "warped_planks", en: "Warped Planks", jp: "歪んだ板材" }, { id: "stripped_acacia_log", en: "Stripped Acacia Log", jp: "樹皮を剥いだアカシアの原木" }, { id: "stripped_dark_oak_log", en: "Stripped Dark Oak Log", jp: "樹皮を剥いだダークオークの原木" },
+             ],
+            floor_stone: [
+                { id: "stone", en: "Stone", jp: "石" }, { id: "cobblestone", en: "Cobblestone", jp: "丸石" }, { id: "smooth_stone", en: "Smooth Stone", jp: "滑らかな石" }, { id: "sandstone", en: "Sandstone", jp: "砂岩" }, { id: "chiseled_sandstone", en: "Chiseled Sandstone", jp: "模様入りの砂岩" }, { id: "smooth_sandstone", en: "Smooth Sandstone", jp: "滑らかな砂岩" }, { id: "andesite", en: "Andesite", jp: "安山岩" }, { id: "polished_andesite", en: "Polished Andesite", jp: "磨かれた安山岩" }, { id: "diorite", en: "Diorite", jp: "閃緑岩" }, { id: "polished_diorite", en: "Polished Diorite", jp: "磨かれた閃緑岩" }, { id: "granite", en: "Granite", jp: "花崗岩" }, { id: "polished_granite", en: "Polished Granite", jp: "磨かれた花崗岩" }, { id: "blackstone", en: "Blackstone", jp: "ブラックストーン" }, { id: "polished_blackstone", en: "Polished Blackstone", jp: "磨かれたブラックストーン" }, { id: "deepslate", en: "Deepslate", jp: "深層岩" },
+            ],
+            doors: [
+                 { id: "wooden_door", en: "Oak Door", jp: "オークのドア" }, { id: "spruce_door", en: "Spruce Door", jp: "トウヒのドア" }, { id: "birch_door", en: "Birch Door", jp: "シラカバのドア" }, { id: "jungle_door", en: "Jungle Door", jp: "ジャングルのドア" }, { id: "acacia_door", en: "Acacia Door", jp: "アカシアのドア" }, { id: "dark_oak_door", en: "Dark Oak Door", jp: "ダークオークのドア" }, { id: "mangrove_door", en: "Mangrove Door", jp: "マングローブのドア" }, { id: "cherry_door", en: "Cherry Door", jp: "サクラのドア" }, { id: "bamboo_door", en: "Bamboo Door", jp: "竹のドア" }, { id: "crimson_door", en: "Crimson Door", jp: "真紅のドア" }, { id: "warped_door", en: "Warped Door", jp: "歪んだドア" },{ id: "pale_oak_door", en: "Pale Oak Door", jp: "ペールオークのドア" }, { id: "iron_door", en: "Iron Door", jp: "鉄のドア" },
+            ],
+            windows: [
+                { id: "glass", en: "Glass Block", jp: "ガラス" }, { id: "white_stained_glass", en: "White Stained Glass", jp: "白色の色付きガラス" }, { id: "orange_stained_glass", en: "Orange Stained Glass", jp: "橙色の色付きガラス" }, { id: "magenta_stained_glass", en: "Magenta Stained Glass", jp: "赤紫色の色付きガラス" }, { id: "light_blue_stained_glass", en: "Light Blue Stained Glass", jp: "空色の色付きガラス" }, { id: "yellow_stained_glass", en: "Yellow Stained Glass", jp: "黄色の色付きガラス" }, { id: "lime_stained_glass", en: "Lime Stained Glass", jp: "黄緑色の色付きガラス" }, { id: "pink_stained_glass", en: "Pink Stained Glass", jp: "ピンクの色付きガラス" }, { id: "gray_stained_glass", en: "Gray Stained Glass", jp: "灰色の色付きガラス" }, { id: "glass_pane", en: "Glass Pane", jp: "ガラス板" }, { id: "white_stained_glass_pane", en: "White Stained Glass Pane", jp: "白色の色付きガラス板" }, { id: "orange_stained_glass_pane", en: "Orange Stained Glass Pane", jp: "橙色の色付きガラス板" }, { id: "magenta_stained_glass_pane", en: "Magenta Stained Glass Pane", jp: "赤紫色の色付きガラス板" }, { id: "light_blue_stained_glass_pane", en: "Light Blue Stained Glass Pane", jp: "空色の色付きガラス板" }, { id: "yellow_stained_glass_pane", en: "Yellow Stained Glass Pane", jp: "黄色の色付きガラス板" }, { id: "lime_stained_glass_pane", en: "Lime Stained Glass Pane", jp: "黄緑色の色付きガラス板" }, { id: "pink_stained_glass_pane", en: "Pink Stained Glass Pane", jp: "ピンクの色付きガラス板" }, { id: "gray_stained_glass_pane", en: "Gray Stained Glass Pane", jp: "灰色の色付きガラス板" },
+            ],
+            lights: [
+               { id: "torch", en: "Torch", jp: "松明" }, { id: "glowstone", en: "Glowstone", jp: "グロウストーン" }, { id: "shroomlight", en: "Shroomlight", jp: "シュルームライト" }, { id: "sea_lantern", en: "Sea Lantern", jp: "シーランタン" }, { id: "lantern", en: "Lantern", jp: "ランタン" }, { id: "ochre_froglight", en: "Ochre Froglight", jp: "黄土色のフロッグライト" }, { id: "verdant_froglight", en: "Verdant Froglight", jp: "緑色のフロッグライト" }, { id: "pearlescent_froglight", en: "Pearlescent Froglight", jp: "真珠色のフロッグライト" }, { id: "end_rod", en: "End Rod", jp: "エンドロッド" },
+            ]
+        };
+        
+        const paletteConfig = [
+            { id: 0, color: '#add8e6', name: 'Air', blockGroup: null, fixed: true }, { id: 1, color: '#B02E26', name: 'Wall (Bricks)', blockGroup: 'wall_bricks' }, { id: 2, color: '#9E9E9E', name: 'Wall (Concrete)', blockGroup: 'wall_concrete' }, { id: 3, color: '#A1662F', name: 'Wall (Terracotta)', blockGroup: 'wall_terracotta' }, { id: 4, color: '#FFFFFF', name: 'Wall (Wool)', blockGroup: 'wall_wool' }, { id: 5, color: '#2E7D32', name: 'Floor (Wood 1)', blockGroup: 'floor_wood1' }, { id: 6, color: '#FF8F00', name: 'Floor (Wood 2)', blockGroup: 'floor_wood2' }, { id: 7, color: '#212121', name: 'Floor (Stone)', blockGroup: 'floor_stone' }, { id: 8, color: '#6A1B9A', name: 'Door', blockGroup: 'doors' }, { id: 9, color: '#1565C0', name: 'Window', blockGroup: 'windows' }, { id: 10, color: '#FBC02D', name: 'Light', blockGroup: 'lights' },
+        ];
+
+
+        // --- INITIALIZATION ---
+        const init = () => {
+            createGrid();
+            createPalette();
+            updateLayerDisplay();
+            drawGrid();
+            updateLanguage();
+            setupEventListeners();
+        };
+
+        const createGrid = () => {
+            gridEditor.innerHTML = '';
+            for (let z = 0; z < GRID_SIZE; z++) {
+                for (let x = 0; x < GRID_SIZE; x++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('grid-cell');
+                    cell.dataset.x = x;
+                    cell.dataset.z = z;
+                    gridEditor.appendChild(cell);
+                }
+            }
+        };
+
+        const createPalette = () => {
+            paletteContainer.innerHTML = '';
+            paletteConfig.forEach(p => {
+                const item = document.createElement('div');
+                item.classList.add('palette-item');
+                
+                const label = document.createElement('label');
+                label.textContent = p.id.toString().padStart(2, '0');
+
+                const btn = document.createElement('button');
+                btn.classList.add('palette-btn');
+                btn.style.backgroundColor = p.color;
+                if (p.id === selectedPalette) btn.classList.add('selected');
+                btn.dataset.paletteId = p.id;
+
+                if (p.fixed) {
+                      paletteAssignments[p.id] = 'air';
+                      const blockName = document.createElement('span');
+                      blockName.textContent = 'Air';
+                      blockName.style.flexGrow = 1;
+                      blockName.style.fontSize = '0.85rem';
+                      item.append(label, btn, blockName);
+                } else {
+                    const select = document.createElement('select');
+                    select.dataset.paletteId = p.id;
+                    const blockGroup = blocks[p.blockGroup];
+                    blockGroup.forEach(block => {
+                        const option = document.createElement('option');
+                        option.value = block.id;
+                        option.textContent = `${block.jp} (${block.en})`;
+                        select.appendChild(option);
+                    });
+                    paletteAssignments[p.id] = blockGroup[0].id;
+                    item.append(label, btn, select);
+                }
+
+                paletteContainer.appendChild(item);
+            });
+        };
+
+        // --- UI DRAWING & UPDATES ---
+        const drawGrid = () => {
+            const cells = gridEditor.children;
+            for (let i = 0; i < cells.length; i++) {
+                const cell = cells[i];
+                const x = parseInt(cell.dataset.x);
+                const z = parseInt(cell.dataset.z);
+                const paletteId = gridData[currentLayer][z][x];
+                cell.style.backgroundColor = paletteConfig.find(p => p.id === paletteId).color;
+            }
+        };
+
+        const updateLayerDisplay = () => {
+            layerDisplay.textContent = `Y=${currentLayer + 1}`;
+        };
+        
+        const updateLanguage = () => {
+            const translation = lang[currentLanguage];
+            // スコープ内で検索
+            document.getElementById('mc-builder-app').querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.dataset.langKey;
+                if(translation[key]) {
+                   el.innerHTML = translation[key];
+                }
+            });
+            // Update select options
+            document.getElementById('mc-builder-app').querySelectorAll('.palette-item select').forEach(select => {
+                const pId = parseInt(select.dataset.paletteId);
+                const config = paletteConfig.find(p => p.id === pId);
+                if (!config || !config.blockGroup) return;
+
+                const currentVal = select.value;
+                const blockGroup = blocks[config.blockGroup];
+                select.innerHTML = '';
+                 blockGroup.forEach(block => {
+                    const option = document.createElement('option');
+                    option.value = block.id;
+                    option.textContent = currentLanguage === 'jp' ? `${block.jp}` : `${block.en}`;
+                    select.appendChild(option);
+                });
+                select.value = currentVal;
+            });
+        };
+        
+        const showToast = (key, isError = false) => {
+            toast.textContent = lang[currentLanguage][key];
+            toast.className = 'toast-msg show';
+            if (isError) toast.classList.add('error');
+            setTimeout(() => toast.classList.remove('show', 'error'), 2000);
+        }
+
+        // --- EVENT HANDLERS ---
+        const setupEventListeners = () => {
+            let isPainting = false;
+            gridEditor.addEventListener('mousedown', (e) => {
+                isPainting = true;
+                handleGridPaint(e);
+            });
+            // Touch support for mobile
+            gridEditor.addEventListener('touchstart', (e) => {
+                 isPainting = true;
+                 // Prevent scrolling while painting
+                 if(e.target.classList.contains('grid-cell')) e.preventDefault();
+                 handleTouchPaint(e);
+            }, {passive: false});
+
+            gridEditor.addEventListener('mousemove', (e) => {
+                if (isPainting) handleGridPaint(e);
+            });
+            
+             gridEditor.addEventListener('touchmove', (e) => {
+                if (isPainting) {
+                    if(e.cancelable) e.preventDefault();
+                    handleTouchPaint(e);
+                }
+            }, {passive: false});
+
+            document.addEventListener('mouseup', () => { isPainting = false; });
+            document.addEventListener('touchend', () => { isPainting = false; });
+            
+            document.getElementById('app-layer-up-btn').addEventListener('click', () => changeLayer(1));
+            document.getElementById('app-layer-down-btn').addEventListener('click', () => changeLayer(-1));
+            document.getElementById('app-clear-layer-btn').addEventListener('click', clearLayer);
+            document.getElementById('app-copy-lower-layer-btn').addEventListener('click', copyLowerLayer);
+            document.getElementById('app-copy-layer-btn').addEventListener('click', copyLayer);
+            document.getElementById('app-paste-layer-btn').addEventListener('click', pasteLayer);
+
+            paletteContainer.addEventListener('click', (e) => {
+                if(e.target.classList.contains('palette-btn')) {
+                    const id = parseInt(e.target.dataset.paletteId);
+                    selectedPalette = id;
+                    paletteContainer.querySelectorAll('.palette-btn.selected').forEach(b => b.classList.remove('selected'));
+                    e.target.classList.add('selected');
+                }
+            });
+
+            paletteContainer.addEventListener('change', (e) => {
+                 if(e.target.tagName === 'SELECT') {
+                    const id = parseInt(e.target.dataset.paletteId);
+                    paletteAssignments[id] = e.target.value;
+                }
+            });
+            
+            generateBtn.addEventListener('click', generateCommands);
+            copyAllBtn.addEventListener('click', copyAllCommands);
+
+            langToggle.addEventListener('change', () => {
+                currentLanguage = langToggle.checked ? 'en' : 'jp';
+                updateLanguage();
+            });
+
+            document.getElementById('app-export-json-btn').addEventListener('click', exportJSON);
+            document.getElementById('app-import-json-btn').addEventListener('click', () => document.getElementById('app-import-file-input').click());
+            document.getElementById('app-import-file-input').addEventListener('change', importJSON);
+        };
+        
+        const handleGridPaint = (e) => {
+            if (e.target.classList.contains('grid-cell')) {
+                const x = parseInt(e.target.dataset.x);
+                const z = parseInt(e.target.dataset.z);
+                if (gridData[currentLayer][z][x] !== selectedPalette) {
+                    gridData[currentLayer][z][x] = selectedPalette;
+                    e.target.style.backgroundColor = paletteConfig.find(p => p.id === selectedPalette).color;
+                }
+            }
+        };
+        
+        const handleTouchPaint = (e) => {
+            const touch = e.touches[0];
+            const target = document.elementFromPoint(touch.clientX, touch.clientY);
+            if (target && target.classList.contains('grid-cell')) {
+                const x = parseInt(target.dataset.x);
+                const z = parseInt(target.dataset.z);
+                if (gridData[currentLayer][z][x] !== selectedPalette) {
+                      gridData[currentLayer][z][x] = selectedPalette;
+                      target.style.backgroundColor = paletteConfig.find(p => p.id === selectedPalette).color;
+                }
+            }
+        }
+
+        const changeLayer = (delta) => {
+            const newLayer = currentLayer + delta;
+            if (newLayer >= 0 && newLayer < MAX_LAYERS) {
+                currentLayer = newLayer;
+                updateLayerDisplay();
+                drawGrid();
+            }
+        };
+
+        const clearLayer = () => {
+            if (confirm(lang[currentLanguage].confirm_clear_layer)) {
+                 gridData[currentLayer] = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(0));
+                 drawGrid();
+            }
+        };
+        
+        const copyLowerLayer = () => {
+            if (currentLayer > 0) {
+                gridData[currentLayer] = JSON.parse(JSON.stringify(gridData[currentLayer - 1]));
+                drawGrid();
+            }
+        };
+
+        const copyLayer = () => {
+            layerClipboard = JSON.parse(JSON.stringify(gridData[currentLayer]));
+            showToast("copied_feedback");
+        };
+
+        const pasteLayer = () => {
+            if (layerClipboard) {
+                gridData[currentLayer] = JSON.parse(JSON.stringify(layerClipboard));
+                drawGrid();
+            }
+        };
+
+        // --- COMMAND GENERATION LOGIC ---
+        // メイン関数：2段階パスで生成を行う
+        const generateCommands = () => {
+            generateBtn.disabled = true;
+            copyAllBtn.disabled = true;
+            generateBtn.textContent = lang[currentLanguage].generating_cmd;
+            commandList.innerHTML = `<div>${lang[currentLanguage].generating_cmd}</div>`;
+
+            setTimeout(() => {
+                const finalCommands = [];
+                const mainCommands = []; // 通常ブロック用
+                const lightCommands = []; // 光源ブロック(ID:10)用
+                
+                const originX = parseInt(document.getElementById('app-originX').value) || 0;
+                const originY = parseInt(document.getElementById('app-originY').value) || 0;
+                const originZ = parseInt(document.getElementById('app-originZ').value) || 0;
+                const isRelative = document.getElementById('app-coord-mode').value === 'relative';
+                
+                // 0. 整地コマンド
+                if (document.getElementById('app-clear-area-checkbox').checked) {
+                    const clearCommands = splitCommand(originX, originY, originZ, originX + GRID_SIZE - 1, originY + MAX_LAYERS - 1, originZ + GRID_SIZE - 1, 'air', isRelative);
+                    finalCommands.push(...clearCommands);
+                }
+
+                const visited = Array(MAX_LAYERS).fill(null).map(() => Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(false)));
+
+                // 共通のスキャン関数
+                const scanAndGenerate = (targetCommands, isLightPass) => {
+                    for (let y = 0; y < MAX_LAYERS; y++) {
+                        for (let z = 0; z < GRID_SIZE; z++) {
+                            for (let x = 0; x < GRID_SIZE; x++) {
+                                // 共通スキップ条件: 訪問済み または 空(0)
+                                if (visited[y][z][x] || gridData[y][z][x] === 0) continue;
+                                
+                                const paletteId = gridData[y][z][x];
+                                const isLight = (paletteId === 10);
+
+                                // パスによる振り分け
+                                // LightPassならLight以外をスキップ、通常PassならLightをスキップ
+                                if (isLightPass && !isLight) continue;
+                                if (!isLightPass && isLight) continue;
+
+                                const blockId = paletteAssignments[paletteId];
+                                
+                                let x2 = x, y2 = y, z2 = z;
+                                // Expand X
+                                while (x2 + 1 < GRID_SIZE && !visited[y][z][x2 + 1] && gridData[y][z][x2 + 1] === paletteId) x2++;
+                                // Expand Z
+                                while (z2 + 1 < GRID_SIZE) {
+                                    let canExpandZ = true;
+                                    for (let i = x; i <= x2; i++) { if (visited[y][z2 + 1][i] || gridData[y][z2 + 1][i] !== paletteId) { canExpandZ = false; break; } }
+                                    if (canExpandZ) z2++; else break;
+                                }
+                                // Expand Y
+                                while (y2 + 1 < MAX_LAYERS) {
+                                    let canExpandY = true;
+                                    for (let j = z; j <= z2; j++) {
+                                        for (let i = x; i <= x2; i++) { if (visited[y2 + 1][j][i] || gridData[y2 + 1][j][i] !== paletteId) { canExpandY = false; break; } }
+                                        if (!canExpandY) break;
+                                    }
+                                    if (canExpandY) y2++; else break;
+                                }
+                                
+                                for (let j = y; j <= y2; j++) {
+                                    for (let k = z; k <= z2; k++) {
+                                        for (let l = x; l <= x2; l++) {
+                                            visited[j][k][l] = true;
+                                        }
+                                    }
+                                }
+
+                                const fillCommands = splitCommand(originX + x, originY + y, originZ + z, originX + x2, originY + y2, originZ + z2, blockId, isRelative);
+                                targetCommands.push(...fillCommands);
+                            }
+                        }
+                    }
+                };
+
+                // 1. 通常ブロックのパス (isLightPass = false)
+                // ID 10 以外のブロックをスキャンして mainCommands に追加
+                scanAndGenerate(mainCommands, false);
+
+                // 2. 光源ブロックのパス (isLightPass = true)
+                // ID 10 のブロックだけをスキャンして lightCommands に追加
+                // (visitedは共有しているので、Pass1で処理済みの場所は自動的にスキップされるが、
+                //  Pass1ではID 10を意図的にスキップしているため、ここで未処理として残っている)
+                scanAndGenerate(lightCommands, true);
+                
+                // コマンドを結合: 整地 -> 通常ブロック -> 光源
+                finalCommands.push(...mainCommands, ...lightCommands);
+
+                lastGeneratedCommands = finalCommands;
+                renderCommands(finalCommands);
+                generateBtn.disabled = false;
+                copyAllBtn.disabled = false;
+                generateBtn.innerHTML = lang[currentLanguage].generate_cmd;
+            }, 50);
+        };
+        
+        const MAX_FILL_COUNT = 32768;
+        const splitCommand = (x1, y1, z1, x2, y2, z2, blockId, isRelative) => {
+            const commands = [];
+            const vol = (x2 - x1 + 1) * (y2 - y1 + 1) * (z2 - z1 + 1);
+            
+            if (vol <= MAX_FILL_COUNT) {
+                const format = (n) => isRelative ? `~${n}` : n;
+                commands.push(`/fill ${format(x1)} ${format(y1)} ${format(z1)} ${format(x2)} ${format(y2)} ${format(z2)} ${blockId}`);
+            } else {
+                const midX = Math.floor((x1 + x2) / 2);
+                const midY = Math.floor((y1 + y2) / 2);
+                const midZ = Math.floor((z1 + z2) / 2);
+                const dx = x2 - x1;
+                const dy = y2 - y1;
+                const dz = z2 - z1;
+
+                if (dx >= dy && dx >= dz) { 
+                    commands.push(...splitCommand(x1, y1, z1, midX, y2, z2, blockId, isRelative));
+                    commands.push(...splitCommand(midX + 1, y1, z1, x2, y2, z2, blockId, isRelative));
+                } else if (dy >= dx && dy >= dz) { 
+                    commands.push(...splitCommand(x1, y1, z1, x2, midY, z2, blockId, isRelative));
+                    commands.push(...splitCommand(x1, midY + 1, z1, x2, y2, z2, blockId, isRelative));
+                } else { 
+                    commands.push(...splitCommand(x1, y1, z1, x2, y2, midZ, blockId, isRelative));
+                    commands.push(...splitCommand(x1, y1, midZ + 1, x2, y2, z2, blockId, isRelative));
+                }
+            }
+            return commands;
+        }
+
+        const renderCommands = (commands) => {
+            commandList.innerHTML = '';
+            if (commands.length === 0) return;
+            commands.forEach(cmd => {
+                const item = document.createElement('div');
+                item.classList.add('command-item');
+                const text = document.createElement('span');
+                text.classList.add('command-text');
+                text.textContent = cmd;
+                const copyBtn = document.createElement('button');
+                copyBtn.classList.add('btn', 'copy-cmd-btn');
+                copyBtn.innerHTML = lang[currentLanguage].copy_btn_text;
+                copyBtn.onclick = () => {
+                    navigator.clipboard.writeText(cmd).then(() => {
+                        item.classList.add('copied');
+                        showToast('copied_feedback');
+                    }).catch(err => console.error('Failed to copy: ', err));
+                };
+                item.append(text, copyBtn);
+                commandList.appendChild(item);
+            });
+        };
+
+        const copyAllCommands = () => {
+            if (lastGeneratedCommands.length === 0) return;
+            const allText = lastGeneratedCommands.join('\n');
+            navigator.clipboard.writeText(allText).then(() => {
+                showToast('copied_feedback');
+            }).catch(err => console.error('Failed to copy all: ', err));
+        };
+
+        // --- DATA I/O ---
+        const exportJSON = () => {
+            const dataToExport = { version: "1.0", gridData, paletteAssignments };
+            const jsonString = JSON.stringify(dataToExport);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'minecraft_build.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        };
+
+        const importJSON = (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+            if (!confirm(lang[currentLanguage].confirm_import)) {
+                 event.target.value = ''; return;
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data && data.gridData && data.paletteAssignments) {
+                        gridData = data.gridData;
+                        paletteAssignments = data.paletteAssignments;
+                        currentLayer = 0;
+                        updateLayerDisplay();
+                        drawGrid();
+                        document.querySelectorAll('.palette-item select').forEach(select => {
+                            const pId = parseInt(select.dataset.paletteId);
+                            if (paletteAssignments[pId]) select.value = paletteAssignments[pId];
+                        });
+                        showToast("import_success");
+                    } else { throw new Error("Invalid file format"); }
+                } catch (error) {
+                    console.error("Failed to import JSON:", error);
+                    showToast("import_error", true);
+                } finally {
+                    event.target.value = '';
+                }
+            };
+            reader.readAsText(file);
+        };
+        
+        // Initialize
+        init();
+        
+    })(); // End IIFE
+    </script>
+</div>
