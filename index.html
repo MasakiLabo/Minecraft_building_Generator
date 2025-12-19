@@ -1,10 +1,24 @@
-<!--Minecraft Building Generator for Blogger 
-   Optimized for embedding in blog posts-->
-<div id="post-intro">
-   <h2 style="text-align: left;">マイクラ建築をサポートするアプリ。</h2><span><!--more--></span><div class="separator" style="clear: both; text-align: center;"><span style="text-align: left;">使い方は動画からも確認できます。</span></div><div class="separator" style="clear: both; text-align: center;"><iframe allowfullscreen="" class="BLOG_video_class" height="266" src="https://www.youtube.com/embed/2ChUJa7Baj8" width="320" youtube-src-id="2ChUJa7Baj8"></iframe></div></div>
-詳細な解説は<a href="https://note.com/masaki_labo1103/n/n951a11cc1cd8">note記事</a>を参照<br>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>マイクラ建築ジェネレーターV2.0</title>
+    <!-- Google Fontsの読み込み（CSSで指定されているフォント用） -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a1a; /* アプリ背景色に合わせる */
+        }
+    </style>
+</head>
+<body>
 
-
+<!-- ここからアプリ本体コード -->
 <div id="mc-builder-app">
     <style>
         /* スコープを #mc-builder-app 内に限定してブログへの影響を防ぐ */
@@ -67,12 +81,58 @@
         #mc-builder-app .lang-switch {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
             font-size: 0.9rem;
         }
         
-        #mc-builder-app .lang-switch label {
+        /* トグルスイッチのスタイル */
+        #mc-builder-app .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+            margin: 0 10px;
+        }
+
+        #mc-builder-app .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        #mc-builder-app .slider {
+            position: absolute;
             cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #555;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        #mc-builder-app .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        #mc-builder-app input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        #mc-builder-app input:focus + .slider {
+            box-shadow: 0 0 1px var(--primary-color);
+        }
+
+        #mc-builder-app input:checked + .slider:before {
+            transform: translateX(24px);
         }
 
         /* Main Content */
@@ -112,7 +172,7 @@
         /* Layout Panels */
         #mc-builder-app .main-area {
             display: flex;
-            flex-direction: column; /* デフォルトは縦積み（ブログ幅用） */
+            flex-direction: column;
             gap: 1.5rem;
         }
         
@@ -419,21 +479,24 @@
        a:hover{
             color:Green; /*マウスが乗るとグリーンとなる*/
             text-decoration:none;/*下線を消す*/
-      }
+       }
     </style>
 
     <header>
        <h1 data-lang-key="app_title">マイクラ建築ジェネレーターV2.0</h1>
         <div class="lang-switch">
-            <label data-lang-key="lang_jp">日本語</label>
-            <input id="app-lang-toggle" type="checkbox" />
-            <label data-lang-key="lang_en">English</label>
+            <span data-lang-key="lang_jp">日本語</span>
+            <label class="toggle-switch">
+                <input id="app-lang-toggle" type="checkbox" />
+                <span class="slider"></span>
+            </label>
+            <span data-lang-key="lang_en">English</span>
         </div>
     </header>
 
     <div class="app-main">
         <div class="info-area">
-            <details open="">
+            <details>
                 <summary data-lang-key="how_to_use_title">使い方</summary>
                 <div class="accordion-content">
                     <p data-lang-key="how_to_use_1">1. 好きなブロックを選ぶ: 右のパレットで、色に対応するマイクラのブロックを選んでね。</p>
@@ -1110,3 +1173,5 @@
     })(); // End IIFE
     </script>
 </div>
+</body>
+</html>
